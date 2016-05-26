@@ -2,9 +2,7 @@
 
 interface iField
 {
-    public function getSQLUpdate();
-    public function getSQLCreate();
-    public function getSQLInsert();
+    public function getSQLDefinition();
     public function __construct($name, $args);
     public function setValue($value);
     public function getValue();
@@ -12,9 +10,7 @@ interface iField
 
 abstract class Field implements iField
 {
-    abstract public function getSQLUpdate();
-    abstract public function getSQLCreate();
-    abstract public function getSQLInsert();
+    abstract public function getSQLDefinition();
 
     protected $name;
     protected $args;
@@ -39,17 +35,10 @@ abstract class Field implements iField
 
 class TextField extends Field
 {
-    public function getSQLCreate()
+    public function getSQLDefinition()
     {
-        return $this->name." TEXT NOT NULL";
+        return "TEXT NOT NULL";
     }
-
-    public function getSQLUpdate()
-    {
-        return "UPDATE :table SET ".$this->name." = ".$this->value." WHERE :condition";
-    }
-    public function getSQLInsert()
-    {}
 }
 
 ?>
