@@ -38,11 +38,11 @@
                 else
                     $first = false;
 
-                $sql = $this->fields[$key].getSQLDefinition();
+                $sql = $this->fields[$key]->getSQLDefinition();
                 $querry = $querry." ".$key." ".$sql;
             }
+            $querry = $querry."\n);";
             print($querry);
-            print_r($this);
         }
     }
 
