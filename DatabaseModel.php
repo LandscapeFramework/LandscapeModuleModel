@@ -18,6 +18,7 @@
 
         protected $exists = false;
         protected $db     = NULL;
+        protected $controler = false;
 
         public $keys; // This variable must be set by the user
 
@@ -36,20 +37,29 @@
                     $this->exists = true;
                     $this->load($a[0], $a[1]);
                     break;
+                case 'controler':
+                    $this->controler = true;
+                    break;
             }
         }
 
         public final function set($key, $value)
         {
+            if($this->controler == true)
+                return;
             $this->fields[$key]->setValue($value);
         }
         public final function get($key)
         {
+            if($this->controler == true)
+                return false;
             return $this->fields[$key]->getValue();
         }
 
         public final function save()
         {
+            if($this->controler == true)
+                return;
             if(!$this->exists)
             {
                 $querry = "INSERT INTO ".explode("\\",static::class)[1]."(";
@@ -96,6 +106,23 @@
             }
         }
 
+        public final function querry($col, $val)
+        {
+            if($this->controler != true)
+                return false;
+
+            $querry = "SELECT * FROM ".explode("\\",static::class)[1]." WHERE ".$col." LIKE '".$val."';";
+            $temp = $this->execute($querry, false);
+            $ret = [];
+            foreach($temp as $row)
+            {
+                $cn = static::class;
+                $tempObj = new $cn('find', 'ID='.$row['ID']);
+                $ret[] = $tempObj;
+            }
+            return $ret;
+        }
+
         protected final function checkTable()
         {
             $querry = "CREATE TABLE IF NOT EXISTS ".explode("\\",static::class)[1]." (\nID INTEGER PRIMARY KEY AUTOINCREMENT,\n";
@@ -130,6 +157,8 @@
 
         protected final function load($field, $value)
         {
+            if($this->controler == true)
+                return;
             $query = "SELECT * from ".explode("\\",static::class)[1]." WHERE ".$field." IS '".$value."';";
             $result = $this->execute($query, false);
             if(sizeof($result) != 1)
