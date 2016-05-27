@@ -41,4 +41,12 @@ class TextField extends Field
     }
 }
 
+class NumberField extends Field
+{
+    public function getSQLDefinition()
+    {
+        return "INTEGER NOT NULL";
+    }
+}
+
 ?>
