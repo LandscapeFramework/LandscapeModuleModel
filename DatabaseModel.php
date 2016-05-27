@@ -35,6 +35,7 @@
                     $a = explode("=",$args);
                     $this->exists = true;
                     $this->load($a[0], $a[1]);
+                    break;
             }
         }
 
@@ -65,6 +66,8 @@
                 $first = true;
                 foreach($this->fields as $key => $value)
                 {
+                    if($key == 'ID')
+                        continue;
                     if($first == false)
                         $querry = $querry.",";
                     else
@@ -73,6 +76,7 @@
                 }
                 $querry = $querry.");";
                 $this->execute($querry);
+                $this->set('ID', intval($this->db->lastInsertID()));
             }
             else
             {
@@ -87,7 +91,6 @@
                     $querry = $querry.$key."='".$this->fields[$key]->getValue()."'";
                 }
                 $querry = $querry." WHERE ID=".$this->fields['ID']->getValue().";";
-                var_dump($querry);
                 $this->execute($querry);
 
             }
