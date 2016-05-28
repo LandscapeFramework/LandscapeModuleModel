@@ -26,7 +26,10 @@
         {
             foreach($this->keys as $key => $value)
             {
-                $this->fields[$key] = new $value($key, []);
+                $temp = explode(':',$value);
+                $arg  = array_slice($temp, 1);
+                $typ  = $temp[0];
+                $this->fields[$key] = new $typ($key, $arg);
             }
             $this->fields['ID'] = new NumberField("ID", []);
             $this->checkTable();
@@ -49,11 +52,14 @@
                 return;
             $this->fields[$key]->setValue($value);
         }
-        public final function get($key)
+        public final function get($key, $real=false)
         {
             if($this->controler == true)
                 return false;
-            return $this->fields[$key]->getValue();
+            if($real)
+                return $this->fields[$key]->getRealValue();
+            else
+                return $this->fields[$key]->getValue();
         }
 
         public final function save()
