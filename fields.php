@@ -65,6 +65,11 @@ class LinkField extends Field
         parent::__construct($name, $args);
     }
 
+    public function getType()
+    {
+        return $this->type;
+    }
+
     public function setValue($value)
     {
         if(is_int($value))

@@ -22,6 +22,11 @@
 
         public $keys; // This variable must be set by the user
 
+        public final function getFields()
+        {
+            return $this->fields;
+        }
+
         public final function __construct($op="", $args=NULL) //op -> operation e.g. find ; args = arguments for op, e.g. 'name=test'
         {
             foreach($this->keys as $key => $value)
@@ -110,6 +115,29 @@
                 $this->execute($querry);
 
             }
+        }
+
+        public final function findRelatives($type)
+        {
+            $test = new $type('controler');
+            $fields = [];
+            foreach($test->getFields() as $id => $field)
+            {
+                if($field instanceof LinkField)
+                {
+                    $t = $field->getType();
+                    if($this instanceof $t)
+                        $fields[] = $id;
+                }
+            }
+            $ret = [];
+            foreach($fields as $col)
+            {
+                $ret = array_merge($ret, $test->querry($col, $this->fields['ID']->getValue()));
+            }
+
+            return $ret;
+
         }
 
         public final function delete()
