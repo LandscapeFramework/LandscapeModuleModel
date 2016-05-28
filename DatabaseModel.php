@@ -106,6 +106,15 @@
             }
         }
 
+        public final function delete()
+        {
+            if($this->controler == true)
+                return;
+
+            $querry = "DELETE FROM ".explode("\\",static::class)[1]." WHERE ID='".$this->fields['ID']->getValue()."';";
+            $this->execute($querry);
+        }
+
         public final function querry($col, $val)
         {
             if($this->controler != true)

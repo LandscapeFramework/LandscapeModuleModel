@@ -40,6 +40,13 @@ class DatabaseModelTest  extends \PHPUnit_Framework_TestCase
         $x = new Dataclass('controler');
         $listall = $x->querryAll();
         $this->assertTrue(sizeof($listall) > 0);
+
+        $y = $listall[0]; // get first item (should be the only one)
+        $y->delete();
+
+        $listall = $x->querryAll();
+        $this->assertTrue(sizeof($listall) == 0);
+
     }
 }
 ?>
