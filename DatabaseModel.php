@@ -123,6 +123,23 @@
             return $ret;
         }
 
+        public final function querryAll()
+        {
+            if($this->controler != true)
+                return false;
+
+            $querry = "SELECT * FROM ".explode("\\",static::class)[1].";";
+            $temp = $this->execute($querry, false);
+            $ret = [];
+            foreach($temp as $row)
+            {
+                $cn = static::class;
+                $tempObj = new $cn('find', 'ID='.$row['ID']);
+                $ret[] = $tempObj;
+            }
+            return $ret;
+        }
+
         protected final function checkTable()
         {
             $querry = "CREATE TABLE IF NOT EXISTS ".explode("\\",static::class)[1]." (\nID INTEGER PRIMARY KEY AUTOINCREMENT,\n";

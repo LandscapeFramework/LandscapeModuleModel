@@ -36,6 +36,10 @@ class DatabaseModelTest  extends \PHPUnit_Framework_TestCase
         $this->assertEquals($x->get('count'), 5);
 
         $x = NULL;
+
+        $x = new Dataclass('controler');
+        $listall = $x->querryAll();
+        $this->assertTrue(sizeof($listall) > 0);
     }
 }
 ?>
