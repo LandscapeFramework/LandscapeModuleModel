@@ -38,7 +38,7 @@ class DatabaseModelTest  extends \PHPUnit_Framework_TestCase
         $this->assertEquals($x->get('ID'), $id);
         $this->assertEquals($x->get('name'), "myself");
         $this->assertEquals($x->get('count'), 5);
-        $this->assertEquals($x->get('time'), $now);
+        $this->assertEquals($x->get('time', true), $now);
 
         $x->set('name', 'other');
         $x->save();
