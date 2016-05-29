@@ -215,8 +215,52 @@
                 $key = $column['name'];
                 if(!isset($this->fields[$key]))
                 { // This should not exist anymore
-                    print("Dropping column $key\n");
-                    print("//TODO\n");
+                    $this->db->beginTransaction();
+                    try
+                    {
+                        print("Dropping all unused columns\n");
+                        $querry = "CREATE TABLE IF NOT EXISTS ".explode("\\",static::class)[1]."___BU___ (\nID INTEGER PRIMARY KEY AUTOINCREMENT,\n";
+                        $first = true;
+                        foreach($this->keys as $key => $value)
+                        {
+                            if($first == false)
+                            {
+                                $querry = $querry.",\n";
+                            }
+                            else
+                                $first = false;
+
+                            $sql = $this->fields[$key]->getSQLDefinition();
+                            $querry = $querry." ".$key." ".$sql;
+                        }
+                        $querry = $querry."\n);";
+                        $this->execute($querry);
+                        $querry = "INSERT INTO ".explode("\\",static::class)[1]."___BU___ SELECT ID";
+                        foreach($this->keys as $key => $value)
+                        {
+                            if($first == false)
+                            {
+                                $querry = $querry.",";
+                            }
+                            else
+                                $first = false;
+                            $querry = $querry."".$key;
+                        }
+                        $querry = $querry." FROM ".explode("\\",static::class)[1].";";
+                        $this->execute($querry);
+
+                        $querry = "DROP TABLE ".explode("\\",static::class)[1].";";
+                        $this->execute($querry);
+
+                        $querry = "ALTER TABLE ".explode("\\",static::class)[1]."___BU___ RENAME TO ".explode("\\",static::class)[1].";";
+                        $this->execute($querry);
+                        $this->db->commit();
+                    }catch(Exception $e)
+                    {
+                        print("Dropping Columns failed: $e->message in $e->file : $e->line!\n");
+                        print("REVERTING... ");
+                        $this->db->rollBack();
+                    }
                 }
             }
             foreach($this->fields as $column => $field)
