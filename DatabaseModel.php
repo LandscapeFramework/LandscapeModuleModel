@@ -27,6 +27,13 @@
             return $this->fields;
         }
 
+        public final function getColumns()
+        {
+            $querry = "PRAGMA table_info(".explode("\\",static::class)[1].");";
+            return $this->execute($querry, false);
+
+        }
+
         public final function __construct($op="", $args=NULL) //op -> operation e.g. find ; args = arguments for op, e.g. 'name=test'
         {
             foreach($this->keys as $key => $value)
@@ -201,6 +208,37 @@
             }
             $querry = $querry."\n);";
             $this->execute($querry);
+
+            $accCols = $this->getColumns();
+            foreach ($accCols as $column)
+            {
+                $key = $column['name'];
+                if(!isset($this->fields[$key]))
+                { // This should not exist anymore
+                    print("Dropping column $key\n");
+                    print("//TODO\n");
+                }
+            }
+            foreach($this->fields as $column => $field)
+            {
+                $found = false;
+                foreach($accCols as $k)
+                {
+                    if($k['name'] == $column)
+                    {
+                        $found = true;
+                        break;
+                    }
+                }
+                if(!$found)
+                {// We need to add column to table
+                    $sql = "ALTER TABLE ".explode("\\",static::class)[1]." ADD ".$column." ".$field->getSQLDefinition().";";
+                    print("Adding Column $column to table\n");
+                    print($sql);
+                    $this->execute($sql);
+                }
+            }
+
         }
 
         protected final function execute($sql, $nofatch=true)

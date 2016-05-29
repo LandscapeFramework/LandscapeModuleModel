@@ -45,7 +45,7 @@ class TextField extends Field
 {
     public function getSQLDefinition()
     {
-        return "TEXT NOT NULL";
+        return "TEXT";
     }
 }
 
@@ -53,7 +53,7 @@ class NumberField extends Field
 {
     public function getSQLDefinition()
     {
-        return "INTEGER NOT NULL";
+        return "INTEGER";
     }
 }
 
@@ -90,7 +90,7 @@ class LinkField extends Field
 
     public function getSQLDefinition()
     {
-        return "INTEGER NOT NULL";
+        return "INTEGER";
     }
 
     public function getRealValue()
@@ -103,7 +103,7 @@ class TimeField extends Field
 {
     public function getSQLDefinition()
     {
-        return "INTEGER NOT NULL";
+        return "INTEGER";
     }
 
     public function setValue($value)
@@ -134,7 +134,7 @@ class BoolField extends Field
 {
     public function getSQLDefinition()
     {
-        return "INTEGER NOT NULL";
+        return "INTEGER";
     }
 
     public function setValue($value)
