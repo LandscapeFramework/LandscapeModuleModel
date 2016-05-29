@@ -1,5 +1,7 @@
 <?php namespace Landscape;
 
+use \DateTime;
+
 interface iField
 {
     public function getSQLDefinition();
@@ -94,6 +96,69 @@ class LinkField extends Field
     public function getRealValue()
     {
         return new $this->type("find", "ID=$this->value");
+    }
+}
+
+class TimeField extends Field
+{
+    public function getSQLDefinition()
+    {
+        return "INTEGER NOT NULL";
+    }
+
+    public function setValue($value)
+    {
+        if(is_int($value))
+        {
+            $this->value = $value;
+        }
+        else if($value instanceof DateTime)
+        {
+            $this->value = $value->getTimestamp();
+        }
+        else
+        {
+            $this->value = intval($value);
+        }
+    }
+
+    public function getRealValue()
+    {
+        $ret = new DateTime('now');
+        $ret->setTimestamp($this->value);
+        return $ret;
+    }
+}
+
+class BoolField extends Field
+{
+    public function getSQLDefinition()
+    {
+        return "INTEGER NOT NULL";
+    }
+
+    public function setValue($value)
+    {
+        if(is_int($value))
+        {
+            if($value == 1 || $value == 0)
+                $this->value = $value;
+            else
+                print("Invalid number for BoolField\n");
+        }
+        else if(is_bool($value))
+        {
+            $this->value = intval($value);
+        }
+        else
+        {
+            $this->value = intval(boolval($value));
+        }
+    }
+
+    public function getRealValue()
+    {
+        return boolval($this->value);
     }
 }
 
