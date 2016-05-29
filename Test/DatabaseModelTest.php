@@ -7,7 +7,7 @@ use \DateTime;
 
 class Dataclass extends DatabaseModel
 {
-    public $keys = ["name" => "Landscape\TextField", "count" => "Landscape\NumberField", "time" => "Landscape\TimeField"];
+    public $keys = ["name" => "Landscape\TextField", "count" => "Landscape\NumberField", "time" => "Landscape\TimeField", "chk" => "Landscape\BoolField"];
 }
 
 class Linkclass extends DatabaseModel
@@ -24,6 +24,7 @@ class DatabaseModelTest  extends \PHPUnit_Framework_TestCase
         $x->set('name', "myself");
         $x->set('count', 5);
         $x->set('time', $now);
+        $x->set('chk', 1);
         $x->save();
 
         $y = new Linkclass();
@@ -39,6 +40,8 @@ class DatabaseModelTest  extends \PHPUnit_Framework_TestCase
         $this->assertEquals($x->get('name'), "myself");
         $this->assertEquals($x->get('count'), 5);
         $this->assertEquals($x->get('time', true), $now);
+        $this->assertEquals($x->get('chk', true), true);
+        $this->assertEquals($x->get('chk'), 1);
 
         $x->set('name', 'other');
         $x->save();
