@@ -40,6 +40,7 @@ class DatabaseModelTest  extends \PHPUnit_Framework_TestCase
         $this->assertEquals($x->get('name'), "myself");
         $this->assertEquals($x->get('count'), 5);
         $this->assertEquals($x->get('time', true), $now);
+        $this->assertEquals($x->get('time'), $now->getTimestamp());
         $this->assertEquals($x->get('chk', true), true);
         $this->assertEquals($x->get('chk'), 1);
 
