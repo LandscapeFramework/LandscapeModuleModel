@@ -3,10 +3,11 @@ namespace Test;
 
 require('DatabaseModel.php');
 use Landscape\DatabaseModel;
+use \DateTime;
 
 class Dataclass extends DatabaseModel
 {
-    public $keys = ["name" => "Landscape\TextField", "count" => "Landscape\NumberField"];
+    public $keys = ["name" => "Landscape\TextField", "count" => "Landscape\NumberField", "time" => "Landscape\TimeField"];
 }
 
 class Linkclass extends DatabaseModel
@@ -18,9 +19,11 @@ class DatabaseModelTest  extends \PHPUnit_Framework_TestCase
 {
     public function testDatabase()
     {
+        $now = new DateTime('now');
         $x = new Dataclass();
         $x->set('name', "myself");
         $x->set('count', 5);
+        $x->set('time', $now);
         $x->save();
 
         $y = new Linkclass();
@@ -35,6 +38,7 @@ class DatabaseModelTest  extends \PHPUnit_Framework_TestCase
         $this->assertEquals($x->get('ID'), $id);
         $this->assertEquals($x->get('name'), "myself");
         $this->assertEquals($x->get('count'), 5);
+        $this->assertEquals($x->get('time'), $now);
 
         $x->set('name', 'other');
         $x->save();
