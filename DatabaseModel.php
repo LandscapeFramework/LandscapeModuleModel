@@ -29,8 +29,8 @@
 
         public final function getColumns()
         {
-            $querry = "PRAGMA table_info(".explode("\\",static::class)[1].");";
-            return $this->execute($querry, false);
+            $query = "PRAGMA table_info(".explode("\\",static::class)[1].");";
+            return $this->execute($query, false);
 
         }
 
@@ -80,46 +80,46 @@
                 return;
             if(!$this->exists)
             {
-                $querry = "INSERT INTO ".explode("\\",static::class)[1]."(";
+                $query = "INSERT INTO ".explode("\\",static::class)[1]."(";
                 $first = true;
                 foreach($this->keys as $key => $value)
                 {
                     if($first == false)
-                        $querry = $querry.",";
+                        $query = $query.",";
                     else
                         $first = false;
-                    $querry = $querry.$key;
+                    $query = $query.$key;
                 }
-                $querry = $querry.") VALUES(";
+                $query = $query.") VALUES(";
                 $first = true;
                 foreach($this->fields as $key => $value)
                 {
                     if($key == 'ID')
                         continue;
                     if($first == false)
-                        $querry = $querry.",";
+                        $query = $query.",";
                     else
                         $first = false;
-                    $querry = $querry."'".$value->getValue()."'";
+                    $query = $query."'".$value->getValue()."'";
                 }
-                $querry = $querry.");";
-                $this->execute($querry);
+                $query = $query.");";
+                $this->execute($query);
                 $this->set('ID', intval($this->db->lastInsertID()));
             }
             else
             {
-                $querry = "UPDATE ".explode("\\",static::class)[1]." SET ";
+                $query = "UPDATE ".explode("\\",static::class)[1]." SET ";
                 $first = true;
                 foreach($this->keys as $key => $value)
                 {
                     if($first == false)
-                        $querry = $querry.",";
+                        $query = $query.",";
                     else
                         $first = false;
-                    $querry = $querry.$key."='".$this->fields[$key]->getValue()."'";
+                    $query = $query.$key."='".$this->fields[$key]->getValue()."'";
                 }
-                $querry = $querry." WHERE ID=".$this->fields['ID']->getValue().";";
-                $this->execute($querry);
+                $query = $query." WHERE ID=".$this->fields['ID']->getValue().";";
+                $this->execute($query);
 
             }
         }
@@ -140,7 +140,7 @@
             $ret = [];
             foreach($fields as $col)
             {
-                $ret = array_merge($ret, $test->querry($col, $this->fields['ID']->getValue()));
+                $ret = array_merge($ret, $test->query($col, $this->fields['ID']->getValue()));
             }
 
             return $ret;
@@ -152,17 +152,17 @@
             if($this->controler == true)
                 return;
 
-            $querry = "DELETE FROM ".explode("\\",static::class)[1]." WHERE ID='".$this->fields['ID']->getValue()."';";
-            $this->execute($querry);
+            $query = "DELETE FROM ".explode("\\",static::class)[1]." WHERE ID='".$this->fields['ID']->getValue()."';";
+            $this->execute($query);
         }
 
-        public final function querry($col, $val)
+        public final function query($col, $val)
         {
             if($this->controler != true)
                 return false;
 
-            $querry = "SELECT * FROM ".explode("\\",static::class)[1]." WHERE ".$col." LIKE '".$val."';";
-            $temp = $this->execute($querry, false);
+            $query = "SELECT * FROM ".explode("\\",static::class)[1]." WHERE ".$col." LIKE '".$val."';";
+            $temp = $this->execute($query, false);
             $ret = [];
             foreach($temp as $row)
             {
@@ -173,13 +173,13 @@
             return $ret;
         }
 
-        public final function querryAll()
+        public final function queryAll()
         {
             if($this->controler != true)
                 return false;
 
-            $querry = "SELECT * FROM ".explode("\\",static::class)[1].";";
-            $temp = $this->execute($querry, false);
+            $query = "SELECT * FROM ".explode("\\",static::class)[1].";";
+            $temp = $this->execute($query, false);
             $ret = [];
             foreach($temp as $row)
             {
@@ -192,22 +192,22 @@
 
         protected final function checkTable()
         {
-            $querry = "CREATE TABLE IF NOT EXISTS ".explode("\\",static::class)[1]." (\nID INTEGER PRIMARY KEY AUTOINCREMENT,\n";
+            $query = "CREATE TABLE IF NOT EXISTS ".explode("\\",static::class)[1]." (\nID INTEGER PRIMARY KEY AUTOINCREMENT,\n";
             $first = true;
             foreach($this->keys as $key => $value)
             {
                 if($first == false)
                 {
-                    $querry = $querry.",\n";
+                    $query = $query.",\n";
                 }
                 else
                     $first = false;
 
                 $sql = $this->fields[$key]->getSQLDefinition();
-                $querry = $querry." ".$key." ".$sql;
+                $query = $query." ".$key." ".$sql;
             }
-            $querry = $querry."\n);";
-            $this->execute($querry);
+            $query = $query."\n);";
+            $this->execute($query);
 
             $accCols = $this->getColumns();
             foreach ($accCols as $column)
@@ -219,41 +219,41 @@
                     try
                     {
                         print("Dropping all unused columns\n");
-                        $querry = "CREATE TABLE IF NOT EXISTS ".explode("\\",static::class)[1]."___BU___ (\nID INTEGER PRIMARY KEY AUTOINCREMENT,\n";
+                        $query = "CREATE TABLE IF NOT EXISTS ".explode("\\",static::class)[1]."___BU___ (\nID INTEGER PRIMARY KEY AUTOINCREMENT,\n";
                         $first = true;
                         foreach($this->keys as $key => $value)
                         {
                             if($first == false)
                             {
-                                $querry = $querry.",\n";
+                                $query = $query.",\n";
                             }
                             else
                                 $first = false;
 
                             $sql = $this->fields[$key]->getSQLDefinition();
-                            $querry = $querry." ".$key." ".$sql;
+                            $query = $query." ".$key." ".$sql;
                         }
-                        $querry = $querry."\n);";
-                        $this->execute($querry);
-                        $querry = "INSERT INTO ".explode("\\",static::class)[1]."___BU___ SELECT ID";
+                        $query = $query."\n);";
+                        $this->execute($query);
+                        $query = "INSERT INTO ".explode("\\",static::class)[1]."___BU___ SELECT ID";
                         foreach($this->keys as $key => $value)
                         {
                             if($first == false)
                             {
-                                $querry = $querry.",";
+                                $query = $query.",";
                             }
                             else
                                 $first = false;
-                            $querry = $querry."".$key;
+                            $query = $query."".$key;
                         }
-                        $querry = $querry." FROM ".explode("\\",static::class)[1].";";
-                        $this->execute($querry);
+                        $query = $query." FROM ".explode("\\",static::class)[1].";";
+                        $this->execute($query);
 
-                        $querry = "DROP TABLE ".explode("\\",static::class)[1].";";
-                        $this->execute($querry);
+                        $query = "DROP TABLE ".explode("\\",static::class)[1].";";
+                        $this->execute($query);
 
-                        $querry = "ALTER TABLE ".explode("\\",static::class)[1]."___BU___ RENAME TO ".explode("\\",static::class)[1].";";
-                        $this->execute($querry);
+                        $query = "ALTER TABLE ".explode("\\",static::class)[1]."___BU___ RENAME TO ".explode("\\",static::class)[1].";";
+                        $this->execute($query);
                         $this->db->commit();
                     }catch(Exception $e)
                     {
